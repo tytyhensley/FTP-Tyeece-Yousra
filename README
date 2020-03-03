@@ -1,1 +1,1 @@
-
+This is a simple implementation of a FTP server that uses a TCP connection to send/receive files from clients.
