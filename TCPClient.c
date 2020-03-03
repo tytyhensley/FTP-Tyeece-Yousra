@@ -5,14 +5,17 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#define PORTNUM 7
+#define PORTNUM 8080
 #define SA struct sockaddr 
 
 int main(){
 	int sockfd, ser;
-	char buf[1024]={0};
-	char buf2[1024]={0};
+	char buf[1024];
+	char buf2[1024];
 	struct sockaddr_in tester;
+
+	 memset(buf, 0, sizeof(buf));
+	 memset(buf2, 0, sizeof(buf2));
 
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) <0){
 		printf ("socket creation failed \n");
@@ -36,12 +39,16 @@ int main(){
     } 
     else{
         printf("connected to the server..\n"); 
-        printf("client: ");
-		scanf("%s",buf);
-		write (sockfd, buf, strlen(buf));
     }
 	
-	do{
+	printf("client: ");
+	scanf("%s",buf);
+	write (sockfd, buf, strlen(buf));
+	read(sockfd, buf2, sizeof(buf2)); 
+	printf("Message from server: "); 
+	puts(buf2);
+
+	/*do{
 		read (sockfd, buf2, strlen(buf2)); //reads 
 		printf("\nserver: %s\n",buf2);
 		printf("\nclient: ");
@@ -49,7 +56,7 @@ int main(){
 		ser=strcmp(buf2,"bye");
 		write (sockfd, buf, strlen(buf));
 	
-	}while (ser!=0);
+	}while (ser!=0);*/
 	
 	close (sockfd);
 

@@ -5,15 +5,20 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
-#define PORTNUM 7
+#include <errno.h>
+#include <arpa/inet.h>
+#include <signal.h> 
+#define STDIN 0
+#define PORTNUM 8080
 
 int main(){
-	int sockfd, len, new_sock, cli, ser;
-	struct sockaddr_in tester, client;
-	char buf[1024]={0};
-	char buf2[1024]={0};
+	int listenfd, len, new_sock;
+	pid_t pid;
+	struct sockaddr_in server, client;
+	char buf[1024],buf2[1024];
+	fd_set read_fd_set; 
 
-	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) <0){ //creates serve
+	if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) <0){ //creates listening socket
 		printf ("socket creation failed\n");
 		return -1;
 	}
@@ -21,15 +26,15 @@ int main(){
 		printf("socket created\n");
 	}
 
-	memset (&tester, 0, sizeof(tester)); //pads the address with zeros
+	memset (&server, 0, sizeof(server)); //pads the address with zeros
 	
-	tester.sin_family= AF_INET; //sets address family
-	tester.sin_port= htons(PORTNUM);//sets the port number 
-	tester.sin_addr.s_addr= htonl(INADDR_ANY); //set any IP address
+	server.sin_family= AF_INET; //sets address family
+	server.sin_port= htons(PORTNUM);//sets the port number 
+	server.sin_addr.s_addr= htonl(INADDR_ANY); //set any IP address
 
 	
 
-	if ((bind(sockfd, (struct sockaddr*)&tester,sizeof(tester))) != 0){  //binds server to a socket
+	if ((bind(listenfd, (struct sockaddr*)&server,sizeof(server))) != 0){  //binds server to a socket
 		printf("sokect bind failed\n");
 		return -1;
 	}
@@ -37,12 +42,42 @@ int main(){
 		printf("bind completed\n");
 	}
 
-	if ((listen(sockfd, 5)) != 0) { 
+	if ((listen(listenfd, 5)) != 0) { //listens for client 
         printf("listen failed\n"); 
         exit(0); 
     } 
     else
         printf("server listening\n"); 
+	
+	while (1){
+		FD_ZERO (&read_fd_set); // clears the descriptor set
+
+		FD_SET(listenfd, &read_fd_set); //sets the listening socket in the read set
+
+		select(listenfd+1, &read_fd_set, NULL, NULL, NULL); //selects a new ready descriptor
+
+		if (FD_ISSET (listenfd, &read_fd_set)){ //accepts a new client connection if new descripter is given
+			len =sizeof(client);
+			new_sock = accept(listenfd, (struct sockaddr*)&client, &len);
+			if ((pid=fork())==0){//forks new proces to deal with client
+				close(listenfd);//closes the listening function in the child
+				bzero(buf, sizeof(buf)); 
+				bzero(buf2, sizeof(buf2)); 
+				read(new_sock, buf, sizeof(buf));//reads the clients message
+                printf("Message From TCP client: "); 
+                puts(buf);
+                printf("Message from TCP server: ");
+                scanf("%s",buf2);
+                write(new_sock, buf2, sizeof(buf2)); //sends message to the client
+                close(new_sock); 
+                exit(0);
+			}
+			close(listenfd);
+		}
+
+	}
+
+	/*
     
 	len =sizeof(client);
 
@@ -53,28 +88,5 @@ int main(){
         return -1;
     }else{
     	printf("server accepted client \n");
-    }
-
-    read (new_sock, buf, strlen(buf)); //reads clients message
-
-    do{
-    	 printf("\nclient: %s",buf); 
-    	 printf("\nserver: ");
-    	 scanf("%s",buf2);
-
-    	 write (new_sock, buf2, strlen(buf2)); //sends server message 
-
-    	 listen (new_sock, 5); //listens for new client message 
-
-    	 read (new_sock, buf, strlen(buf));
-
-    	 cli=strcmp(buf,"bye"); //checks for exit message of client 
-    	 ser=strcmp(buf2,"bye");
-
-    } while ((cli!=0) || (ser!=0)); //closes loop once the exit message is sent
-
-    close(sockfd);
-    close(new_sock);
-
-    return 0;
+    }*/
 }
