@@ -29,7 +29,6 @@ int main(){
 	tester.sin_family= AF_INET; //sets address family
 	tester.sin_addr.s_addr= htonl(INADDR_ANY); //set any IP address
 	tester.sin_port= htons(PORTNUM);//sets the port number 
-	
 
 	
 
@@ -40,13 +39,23 @@ int main(){
     else{
         printf("connected to the server..\n"); 
     }
+
+    do{
+
+  //   	char buf[1024] = {0};
+		// char buf2[1024] = {0};
+
 	
-	printf("client: ");
-	scanf("%s",buf);
-	write (sockfd, buf, strlen(buf));
-	read(sockfd, buf2, sizeof(buf2)); 
-	printf("Message from server: "); 
-	puts(buf2);
+		printf("Message from client: ");
+		scanf("%s",buf);
+		//write (sockfd, buf, strlen(buf));
+	    send(sockfd , buf , strlen(buf) , 0 ); 
+
+		read(sockfd, buf2, sizeof(buf2)); 
+		printf("Message from server: %s\n",buf2); 
+		//puts(buf2);
+
+		ser=strncmp(buf2,"bye", 2);
 
 	/*do{
 		read (sockfd, buf2, strlen(buf2)); //reads 
@@ -57,9 +66,10 @@ int main(){
 		write (sockfd, buf, strlen(buf));
 	
 	}while (ser!=0);*/
-	
-	close (sockfd);
 
+	}while (ser!=0);
+	printf("client-out");
+	close (sockfd);
 	return 0;
 
 }
