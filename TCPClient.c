@@ -42,8 +42,8 @@ int main(){
 
     do{
 
-  //   	char buf[1024] = {0};
-		// char buf2[1024] = {0};
+    	char buf[1024] = {0};
+		char buf2[1024] = {0};
 
 	
 		printf("Message from client: ");
