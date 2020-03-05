@@ -15,7 +15,8 @@ int main(){
 	int listenfd, len, new_sock, cli, ser;
 	pid_t pid;
 	struct sockaddr_in server, client;
-	char buf[1024],buf2[1024];
+	char buf[1024];
+	char buf2[1024];
 	fd_set read_fd_set; 
 
 	if ((listenfd = socket(AF_INET, SOCK_STREAM, 0)) <0){ //creates listening socket
@@ -59,37 +60,38 @@ int main(){
 		if (FD_ISSET (listenfd, &read_fd_set)){ //accepts a new client connection if new descripter is given
 			len =sizeof(client);
 			new_sock = accept(listenfd, (struct sockaddr*)&client, &len);
+			printf("new client connected!\n" );
 			
 			if ((pid=fork())==0){//forks new proces to deal with client
 				close(listenfd);//closes the listening function in the child
 				// bzero(buf, sizeof(buf)); 
 				// bzero(buf2, sizeof(buf2)); 
-			
-		do{
-				// char buf[1024] = {0};
-				// char buf2[1024] = {0};
+						
+					do{
+							char buf[1024] = {0};
+							char buf2[1024] = {0};
 
-				read(new_sock, buf, sizeof(buf));//reads the clients message
-                printf("\nMessage From TCP client: %s\n",buf); 
-               // puts(buf);
-                printf("\nMessage from TCP server: ");
-                scanf("%s",buf2);
-
-
-		    	 cli=strncmp(buf,"bye", 2); //checks for exit message of client 
-		    	 ser=strncmp(buf2,"bye",2);
-
-                // write(new_sock, buf2, sizeof(buf2)); //sends message to the client
-		    	 	    send(new_sock , buf2 , strlen(buf2) , 0 ); 
-
-                //close(new_sock); 
-                //exit(0);
+							read(new_sock, buf, sizeof(buf));//reads the clients message
+			                printf("Message From TCP client: %s\n",buf); 
+			               // puts(buf);
+			                printf("Message from TCP server: ");
+			                scanf("%s",buf2);
 
 
-				}while ((cli!=0) || (ser!=0)); //closes loop once the exit message is sent
-				printf("server-out");
-				close(new_sock);
-				exit(0);
+					    	cli=strncmp(buf,"bye", 2); //checks for exit message of client 
+					    	ser=strncmp(buf2,"bye",2);
+
+			                // write(new_sock, buf2, sizeof(buf2)); //sends message to the client
+					    	send(new_sock , buf2 , strlen(buf2) , 0 ); 
+
+			                //close(new_sock); 
+			                //exit(0);
+
+
+							}while ((cli!=0) || (ser!=0)); //closes loop once the exit message is sent
+							printf("server-out");
+							close(new_sock);
+							exit(0);
 		
 			}
 
