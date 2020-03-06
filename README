@@ -1,1 +1,8 @@
-This is a simple implementation of a FTP server that uses a TCP connection to send/receive files from clients.
+This is a simple implementation of a FTP server that uses a TCP connection to send/receive files from clients. 
+
+Currently in this checkpoint only the user and pass commands were implemented. The user will have chance to enter a command, the server will respond with the correct message either and error or prompter more information. The uses the select function to navigate between multiple clients and gives the correct response to each. 
+
+There are two additional files used: 
+Users.txt -holds information about the user and there corresponding passwords
+Text.txt -hold information about all our test cases and the errors that were not solved
+

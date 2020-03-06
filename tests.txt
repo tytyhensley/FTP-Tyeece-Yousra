@@ -1,0 +1,48 @@
+Handling multiple clients
+- Ability to handle any given number of clients (tested with up to 4) to one server and have the server respond to the correct client. 
+
+25 iterations of back and forth communication between 3 clients and a server were tested.
+
+Any client can send a message to the server at any time and server responses are correctly directed to whatever client sent the message.
+However, this is only the case if clients do not connect to the server simultaneously. In that case, the server responds to clients in turn independent of which client sent the message and one point only allows one client to send a message at a time. If client 1 sends a message to the server, it can receive it but responds to client 2 and then only 2 is allowed to respond back to the server but the server then responds to client 3. This would be a hinderance for file transfer.
+
+Since quit was not need for check point, terminate from the keyboard was used. when used the server will print multiple black lines of user input but this does not effect other clients. The issue was not resolved but will be with the quit function.
+
+
+Chat conversation end
+Type a message...
+
+Tests for parsing of data 
+	1) No space
+		-registers as a single command and gives error message
+	2) Multiple spaces between the command and user input
+		-parses them into two separate strings and continues with program
+Tests for command matching
+	1)command written in lowercase
+		-does not register as a command as it is case sensitive, gives error message
+	2)no command entered
+		-gives error message that the command is not found
+	3)fraudulent command
+		-does not register, gives error message
+	4)command written alone
+		-the program crashes, didn't get time to fix this problem
+Tests for user function
+	1)user with just space	
+		does not register, gives error message
+	2)user with incorrect parameter
+		-does not register, gives error message
+	3)user with password as parameter
+		-does not register, gives error message
+	4)user with multiple parameters
+		-does not register, gives error message 
+Tests for pass function
+	1)pass with just space
+		-does not register, gives error message
+	2)pass with another password on file but not corresponding to username
+		-does not register gives error message
+	3)pass with incorrect parameter
+		-does not register gives error message
+	4)pass before user is called
+		-gives error saying that user must be authorised first
+	5)pass with multiple parameters
+		-does not register gives error message

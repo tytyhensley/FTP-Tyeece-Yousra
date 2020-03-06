@@ -42,12 +42,12 @@ int main(){
 
     do{
 
-    	char buf[1024] = {0};
-		char buf2[1024] = {0};
+  //   	char buf[1024] = {0};
+		// char buf2[1024] = {0};
 
 	
-		printf("Message from client: ");
-		scanf("%s",buf);
+		printf("\nMessage from client: ");
+		fgets(buf, 1024, stdin);
 		//write (sockfd, buf, strlen(buf));
 	    send(sockfd , buf , strlen(buf) , 0 ); 
 
@@ -56,16 +56,6 @@ int main(){
 		//puts(buf2);
 
 		ser=strncmp(buf2,"bye", 2);
-
-	/*do{
-		read (sockfd, buf2, strlen(buf2)); //reads 
-		printf("\nserver: %s\n",buf2);
-		printf("\nclient: ");
-		scanf("%s",buf);
-		ser=strcmp(buf2,"bye");
-		write (sockfd, buf, strlen(buf));
-	
-	}while (ser!=0);*/
 
 	}while (ser!=0);
 	printf("client-out");
