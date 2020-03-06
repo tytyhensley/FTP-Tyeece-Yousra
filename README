@@ -5,4 +5,5 @@ Currently in this checkpoint only the user and pass commands were implemented. T
 There are two additional files used: 
 Users.txt -holds information about the user and there corresponding passwords
 Text.txt -hold information about all our test cases and the errors that were not solved
+Makefile -makefile for creating executable
 
