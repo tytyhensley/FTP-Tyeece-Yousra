@@ -104,35 +104,26 @@ int main(){
 			}
 			/*  ------------ LS ------------ */
 			if (strncmp(buf, "LS", strlen("LS")) == 0) {
+				buf[strlen(buf)-1] = '\0';
 				send(sockfd , buf , strlen(buf),0);
 				read(sockfd, buf2, sizeof(buf2));
-				if(strncmp(buf2, error, strlen(error))==0){
-					printf("Message from server: %s\n",buf2); 
-					continue;
-				}
-				//sys_sr(sockfd);
+				printf("Message from server: %s\n",buf2); 
 				continue;
         	}
 			/*  ------------ PWD ------------ */ 
 			else if (strncmp(buf, "PWD", strlen("PWD")) == 0) {
+				buf[strlen(buf)-1] = '\0';
 				send(sockfd , buf , strlen(buf),0);
 				read(sockfd, buf2, sizeof(buf2));
-				if(strncmp(buf2, error, strlen(error))==0){
-					printf("Message from server: %s\n",buf2); 
-					continue;
-				}
-				//sys_sr(sockfd);
+				printf("Message from server: %s\n",buf2); 
 				continue;
         	}
 			/*  ------------ CD ------------ */ 
 			else if (strncmp(buf, "CD", strlen("CD")) == 0) {
+				buf[strlen(buf)-1] = '\0';
 				send(sockfd , buf , strlen(buf),0);
 				read(sockfd, buf2, sizeof(buf2));
-				if(strncmp(buf2, error, strlen(error))==0){
-					printf("Message from server: %s\n",buf2); 
-					continue;
-				}
-				//sys_sr(sockfd);
+				printf("Message from server: %s\n",buf2); 
 				continue;
 			}
 			else{
@@ -140,6 +131,8 @@ int main(){
 				read(sockfd, buf2, sizeof(buf2)); 
 				printf("Message from server: %s\n",buf2); 
 			}
+
+			
 		}
 	}while (quit_toggle != 1);
 	close (sockfd);
