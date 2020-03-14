@@ -103,10 +103,10 @@ int main(){
 		/*  ------------ !CD ------------ */ 
 		else if (strncmp(input_array[0], "!CD", strlen("!CD")) == 0) {
 
-				printf("\ncommand:%s\n" ,input_array[0]);
-				printf("command 2nd:%s" ,input_array[1]);
-				printf("command 3rd:%s" ,input_array[2]);
-				printf("end of command\n");
+				// printf("\ncommand:%s\n" ,input_array[0]);
+				// printf("command 2nd:%s" ,input_array[1]);
+				// printf("command 3rd:%s" ,input_array[2]);
+				// printf("end of command\n");
 				
 			if (input_array[1] != NULL){  //cd on its own should take you to the home directory 
 				directory = input_array[1]; 
@@ -137,11 +137,12 @@ int main(){
 
 
 		else{
-	    send(sockfd , buf , strlen(buf) , 0 ); 
-		read(sockfd, buf2, sizeof(buf2)); 
-		printf("Message from server: %s\n",buf2); 
+	    send(sockfd , buf , strlen(buf) , 0 );
 		//puts(buf2);
 		}
+		
+		read(sockfd, buf2, sizeof(buf2)); 
+		printf("Message from server: %s\n",buf2); 
 		ser=strncmp(buf2,"bye", 2);
 		}
 
