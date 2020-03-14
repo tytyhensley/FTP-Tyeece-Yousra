@@ -10,17 +10,18 @@
 #define SA struct sockaddr
 #define PATH_MAX 1024; 
 
-void parseInput(char* buf[1024], char* input_array[100]);
+void parseInput(char* input_array[100]);
 void quit_cl(int *quit_toggle);
 void ls_cl(char* input_array[100]);
 void cd_cl(char* input_array[100]);
 void sys_sr(int sockfd);
 void get_sr(char* input_array[100]);
 
+char buf[1024];
+char buf2[1024];
 int main(){
 	int sockfd, ser;
-	char buf[1024];
-	char buf2[1024];
+	
 	struct sockaddr_in tester;
 	char * input_array[100];
 	int quit_toggle = 0;
@@ -70,7 +71,7 @@ int main(){
 					printf("Message from server: %s\n",buf2); 
 					continue;
 				}
-				parseInput(&buf,input_array);
+				parseInput(input_array);
 				//get_sr(input_array);
 				continue;
         	}
@@ -86,7 +87,7 @@ int main(){
         	}
 			/*  ------------ !LS ------------ */ 
         	if (strncmp(buf, "!LS", strlen("!LS")) == 0) {
-				parseInput(&buf,input_array);
+				parseInput(input_array);
 				ls_cl(input_array);
 				continue;
         	}
@@ -97,7 +98,7 @@ int main(){
         	}
 			/*  ------------ !CD ------------ */ 
 			else if (strncmp(buf, "!CD", strlen("!CD")) == 0) {
-				parseInput(&buf,input_array);
+				parseInput(input_array);
 				cd_cl(input_array);
 				continue;
 			}
@@ -146,19 +147,24 @@ int main(){
 }
 
 /* parse through user input and stores them in an array*/
-void parseInput(char* buf[1024], char* input_array[100]){
+void parseInput(char* input_array[100]){
   const char delimiter[2] = " ";
   char * input_tokens;
   int element_counter = 0;
   
+  //puts(buf);
   input_tokens = strtok(buf, delimiter);
   
-  while( input_tokens != NULL ) {
+  while(input_tokens != NULL ) {
     input_array[element_counter] = input_tokens;
     element_counter++ ;
     input_tokens = strtok(NULL, delimiter);
   }
   //input_array[1][strcspn(input_array[1], "\n")] = '\0';
+
+
+
+
 }
 
 /*calls sytem call for cd in the client*/
@@ -171,10 +177,11 @@ void quit_cl(int *quit_toggle){
 void ls_cl(char* input_array[100]){
 	char sys_string[1024];
 
-	printf("> ls command recieved \n");
+	//printf("> ls command recieved \n");
 
 	if (input_array[1] != NULL && !isspace(input_array[1])){
 		strncat(sys_string, "ls ", 100);
+		puts(sys_string);
 		strncat(sys_string, input_array[1], 100);
 		puts(sys_string);
 
@@ -202,8 +209,8 @@ void cd_cl(char* input_array[100]){
 		directory = "~\0";
 	}
 
-	printf("directory:%s" ,directory);
-	printf("end of dir\n");
+	//printf("directory:%s" ,directory);
+	//printf("end of dir\n");
 
 	int cd_status = chdir(directory); 
 
@@ -211,7 +218,7 @@ void cd_cl(char* input_array[100]){
 		printf("ERROR in !CD command\n");
 	}
 	else if(cd_status == 0){
-		printf("Succesfully changed directories");
+		printf("Succesfully changed directories\n");
 		system("pwd");
 	}
 }
