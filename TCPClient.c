@@ -6,7 +6,8 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #define PORTNUM 8080
-#define SA struct sockaddr 
+#define SA struct sockaddr
+#define PATH_MAX 1024; 
 
 void parseInput();
 
@@ -16,15 +17,20 @@ void parseInput();
 	struct sockaddr_in tester;
 	char * input_array[100];
 	char sys_string[1024];
+	char filename[1024];
 	char* directory;
 	int quit_toggle = 0;
+	int file_status;
+	char path[1024];
+	FILE *fp;
+
 
 
 
 int main(){
 	
-	 memset(buf, 0, sizeof(buf));
-	 memset(buf2, 0, sizeof(buf2));
+	memset(buf, 0, sizeof(buf));
+	memset(buf2, 0, sizeof(buf2));
 
 	if ((sockfd = socket(AF_INET, SOCK_STREAM, 0)) <0){
 		printf ("socket creation failed \n");
@@ -71,81 +77,138 @@ int main(){
 		}
 		else{
 
-		/*  ------------ !LS ------------ */ 
-        if (strncmp(input_array[0], "!LS", strlen("!LS")) == 0) {
-            printf("> ls command recieved \n");
+			/*  ------------ PUT ------------ */ 
+			if (strncmp(input_array[0], "PUT", strlen("PUT")) == 0){
 
-			if (input_array[1] != NULL && !isspace(input_array[1])){
-				strncat(sys_string, "ls ", 100);
-				strncat(sys_string, input_array[1], 100);
-				puts(sys_string);
-				//!LS /Users/Yousra
-
-				if(input_array[2]!= NULL){
-				strncat(sys_string, " ", 100);
-				strncat(sys_string, input_array[2], 100);
-				//!LS -l /Users/Yousra
-				puts(sys_string);
+				if (input_array[1] == NULL){
+					printf("no file name given\n");
 				}
-				system(sys_string);
-			}
-			else {
-				system("ls");
-			}
-        }
+				else{
+			
+					
 
-		/*  ------------ !PWD ------------ */ 
-		else if (strncmp(input_array[0], "!PWD", strlen("!PWD")) == 0) {
-            //printf("> ls command recieved \n");
-			system("pwd");
-        }
+					strncat(filename, input_array[1], 100);
 
-		/*  ------------ !CD ------------ */ 
-		else if (strncmp(input_array[0], "!CD", strlen("!CD")) == 0) {
+					filename[strlen(filename)-1] = '\0';
+					fp = fopen(	filename, "r");//opens file for reading and makes sure it exists, retur -1 if not
 
-				// printf("\ncommand:%s\n" ,input_array[0]);
-				// printf("command 2nd:%s" ,input_array[1]);
-				// printf("command 3rd:%s" ,input_array[2]);
-				// printf("end of command\n");
+					if(fp == NULL) {
+						printf("ERROR on file open\n");
+					
+					}
+					else{
+						printf("file successfully  opened \n\n");
+
+						while (fgets(path, sizeof(path), fp) != NULL){
+						printf("%s", path);
+						send(sockfd , path , strlen(path) , 0 );
+					}
+
+						file_status = fclose(fp);
+						if (file_status == -1) {
+							printf("\n\nERROR on file close\n");
+						}
+						else{
+							printf("\nfile successfully closed \n");
+
+						}	
+
+
+					}
+				}
+
+			// while (fgets(path, sizeof(path), fp)){
+			// 	printf("%s", path);
+			// 	//file_status ++ 
+			// }
+
+
 				
-			if (input_array[1] != NULL){  //cd on its own should take you to the home directory 
-				directory = input_array[1]; 
-				directory[strlen(directory)-1] = '\0'; //adds the null character to the end of the parsed string			}
-			}
-			else{
-				directory = "~\0";
-			}
-		
-	
-			printf("directory:%s" ,directory);
-			printf("end of dir\n");
+				/* Error reported by pclose() */
+			// } else {
+			// 	/* Use macros described under wait() to inspect `status' in order
+			// 	to determine success/failure of command executed by popen() */
+			// }
 
-
-			int cd_status = chdir(directory); 
-			//chdir(input_array[1]);
-
-			if (cd_status == -1){
-				printf("ERROR in !CD command\n");
 			}
-			else if(cd_status == 0){
-				printf("Succesfully changed directories");
+
+			/*  ------------ !LS ------------ */ 
+			else if (strncmp(input_array[0], "!LS", strlen("!LS")) == 0) {
+				//printf("> ls command recieved \n");
+
+				if (input_array[1] != NULL && !isspace(input_array[1])){
+					strncat(sys_string, "ls ", 100);
+					strncat(sys_string, input_array[1], 100);
+					//puts(sys_string);
+					//!LS /Users/Yousra
+
+					if(input_array[2]!= NULL){
+					strncat(sys_string, " ", 100);
+					strncat(sys_string, input_array[2], 100);
+					//!LS -l /Users/Yousra
+					//puts(sys_string);
+					}
+					system(sys_string);
+				}
+				else {
+					system("ls");
+				}
+			}
+
+			/*  ------------ !PWD ------------ */ 
+			else if (strncmp(input_array[0], "!PWD", strlen("!PWD")) == 0) {
+				//printf("> ls command recieved \n");
 				system("pwd");
 			}
 
+			/*  ------------ !CD ------------ */ 
+			else if (strncmp(input_array[0], "!CD", strlen("!CD")) == 0) {
 
-		}
-
-
-		else{
-	    send(sockfd , buf , strlen(buf) , 0 );
-		//puts(buf2);
-		}
+					// printf("\ncommand:%s\n" ,input_array[0]);
+					// printf("command 2nd:%s" ,input_array[1]);
+					// printf("command 3rd:%s" ,input_array[2]);
+					// printf("end of command\n");
+					
+				if (input_array[1] != NULL){  //cd on its own should take you to the home directory 
+					directory = input_array[1]; 
+					directory[strlen(directory)-1] = '\0'; //adds the null character to the end of the parsed string			}
+				}
+				else{
+					directory = "~\0";
+				}
+			
 		
-		read(sockfd, buf2, sizeof(buf2)); 
-		printf("Message from server: %s\n",buf2); 
-		ser=strncmp(buf2,"bye", 2);
+				// printf("directory:%s" ,directory);
+				// printf("end of dir\n");
+
+
+				int cd_status = chdir(directory); 
+				//chdir(input_array[1]);
+
+				if (cd_status == -1){
+					printf("ERROR in !CD command\n");
+				}
+				else if(cd_status == 0){
+					printf("Succesfully changed directories");
+					system("pwd");
+				}
+
+
+			}
+			else{
+			printf("sending ... \n");
+			send(sockfd , buf , strlen(buf) , 0 );
+			//puts(buf2);
+				read(sockfd, buf2, sizeof(buf2)); 
+			printf("Message from server: %s\n",buf2);
+			}
+
+		 
+			ser=strncmp(buf2,"bye", 2);
+
 		}
 
+	 //printf("\nnext interation ..\n");
 	}while (quit_toggle != 1);
 		//}while (ser!=0 || quit_toggle != 1);
 
@@ -153,7 +216,6 @@ int main(){
 	//printf("client-out");
 	close (sockfd);
 	return 0;
-
 }
 
 void parseInput(){
