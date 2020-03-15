@@ -6,11 +6,15 @@ Handling multiple clients
 Any client can send a message to the server at any time and server responses are correctly directed to whatever client sent the message.
 However, this is only the case if clients do not connect to the server simultaneously. In that case, the server responds to clients in turn independent of which client sent the message and one point only allows one client to send a message at a time. If client 1 sends a message to the server, it can receive it but responds to client 2 and then only 2 is allowed to respond back to the server but the server then responds to client 3. This would be a hinderance for file transfer.
 
-Since quit was not need for check point, terminate from the keyboard was used. when used the server will print multiple black lines of user input but this does not effect other clients. The issue was not resolved but will be with the quit function.
-
-
 Chat conversation end
 Type a message...
+
+Test for command line input for character
+	1) not enough/or too much parameter
+		-gives error message that they are wrong 
+	2) wrong parameter
+		-gives error message that they are invalid
+	
 
 Tests for parsing of data 
 	1) No space
@@ -19,13 +23,13 @@ Tests for parsing of data
 		-parses them into two separate strings and continues with program
 Tests for command matching
 	1)command written in lowercase
-		-does not register as a command as it is case sensitive, gives error message
+		-does not register as a command as it is case sensitive, gives error 			message
 	2)no command entered
 		-gives error message that the command is not found
 	3)fraudulent command
 		-does not register, gives error message
 	4)command written alone
-		-the program crashes, didn't get time to fix this problem
+		-does not register gives error message
 Tests for user function
 	1)user with just space	
 		does not register, gives error message
@@ -46,3 +50,80 @@ Tests for pass function
 		-gives error saying that user must be authorised first
 	5)pass with multiple parameters
 		-does not register gives error message
+Tests for getfp function
+	1)getfp with just space
+		-does not register, gives error message
+	2)getfp with file not in current directory
+		-does not register gives error message
+	3)getfp with incorrect parameter
+		-does not register gives error message
+	4)getfp before user is called
+		-gives error saying that user must be authorised first
+	5)getfp with multiple parameters
+		-only registers the first file name given
+Tests for putfp function
+	1)putfp with just space
+		-does not register, gives error message
+	2)putfp with file not in current directory
+		-does not register gives error message
+	3)putfp with incorrect parameter
+		-does not register gives error message
+	4)putfp before user is called
+		-gives error saying that user must be authorised first
+	5)putfp with multiple parameters
+		-only registers the first file name given
+
+Tests for !LS, !PWD functions
+	1) with just space
+		-works as normal
+	2)with fraudulent directory/command
+		-!LS gives an error message
+		-!PWD proceeds as normal and ignores the directory
+	3)before user
+		-gives error message saying that user must be authorised first
+	4)with multiple parameters
+		-!LS gives an error message
+		-!PWD proceeds as normal and ignores the directories
+Tests for !CD function
+	1) with just space
+		-gives error message that directory/command is missing
+	2)with fraudulent directory/command
+		-gives error message that directory does not exist
+	3)before user
+		-gives error message saying that user must be authorised first
+	4)with multiple parameters
+		-gives error message
+	5)with *
+		-gives error message, requires full name of directory
+
+Tests for LS, PWD functions
+	1) with just space
+		-works as normal
+	2)with fraudulent directory/command
+		-works as normal
+	3)before user
+		-gives error message saying that user must be authorised first
+	4)with multiple parameters
+		-works as normal
+Tests for CD function
+	1) with just space
+		-gives error message that directory/command is missing
+	2)with fraudulent directory/command
+		-gives error message that directory does not exist
+	3)before user
+		-gives error message saying that user must be authorised first
+	4)with multiple parameters
+		-gives error message
+	5)with *
+		-gives error message, requires full name of directory
+
+Tests for quit function
+	1) with just space
+		-works normally
+	2) before user 
+		-works normally
+
+ALL functions if entered incorrectly will give an error message
+
+Has problem sending large files.
+
